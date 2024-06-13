@@ -1,0 +1,42 @@
+version: '3.3'
+
+services:
+  web:
+    build: ./
+    ports:
+      - "80:80"
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - 9456:9090
+    volumes:
+      - ./config:/etc/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - 3111:3000
+    depends_on:
+      - prometheus
+
+  node_exporter:
+    image: prom/node-exporter
+    ports:
+      - 9113:9100
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor
+    ports:
+      - 9178:8080
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
