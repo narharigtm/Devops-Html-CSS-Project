@@ -17,7 +17,7 @@ pipeline {
     post {
         success {
             echo 'Pipeline succeeded!'
-            sh 'docker-compose down'
+            
         }
         failure {
             echo 'Pipeline failed!'
